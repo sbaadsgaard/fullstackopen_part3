@@ -3,7 +3,7 @@ const app = express()
 const PORT = 3001
 app.use(express.json())
 
-const persons = [
+let persons = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -51,6 +51,16 @@ app.get("/info", (request, response) => {
     const timeAndDate = `${timeStamp.toDateString()} ${timeStamp.toTimeString()}`
     response.send(`Phonebook  has info for ${persons.length} people <br/> ${timeAndDate}`)
 })
+
+app.delete("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id)
+    if (!persons.some(p => p.id === id)) {
+        return response.status(404).end()
+    }
+    persons = persons.filter(p => p.id !== id)
+    response.status(204).end()
+})
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
