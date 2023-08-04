@@ -36,6 +36,16 @@ app.get("/api/persons", (request, response) => {
     response.json(persons)
 })
 
+app.get("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id)
+    const person = persons.find(p => p.id === id)
+    if (!person) {
+        return response.status(404).json({error: `No person with id ${id} found`})
+    }
+
+    response.json(person)
+})
+
 app.get("/info", (request, response) => {
     const timeStamp = new Date()
     const timeAndDate = `${timeStamp.toDateString()} ${timeStamp.toTimeString()}`
