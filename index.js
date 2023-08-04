@@ -1,8 +1,8 @@
 const express = require("express")
 const app = express()
 const PORT = 3001
-app.use(express.json())
 
+app.use(express.json())
 let persons = [
     { 
       "id": 1,
@@ -27,6 +27,7 @@ let persons = [
 ]
 
 
+const newID = () => Math.floor(Math.random() * 1000000) + 1
 
 app.get("/", (request, response) => {
     response.send("<h1>Hello world!</h1>")
@@ -59,6 +60,28 @@ app.delete("/api/persons/:id", (request, response) => {
     }
     persons = persons.filter(p => p.id !== id)
     response.status(204).end()
+})
+
+app.post("/api/persons", (request, response) => {
+    const body = request.body
+    console.log(request)
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: "name or number is missing"
+        })
+    } else if (persons.some(p => p.name === body.name)) {
+        return response.status(404).json({
+            error: "name must be unique"
+        })
+    }
+    const person = {
+        name: body.name,
+        number: body.number,
+        id:  newID()
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
 })
 
 
