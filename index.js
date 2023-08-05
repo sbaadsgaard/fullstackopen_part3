@@ -1,8 +1,11 @@
 const express = require("express")
 const morgan = require("morgan")
+const cors = require("cors")
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
+app.use(express.static("build"))
+app.use(cors())
 app.use(express.json())
 morgan.token("body", (req, res) => {
     return JSON.stringify(req.body)
@@ -73,7 +76,7 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
     const body = request.body
-    console.log(request)
+    console.log(body)
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: "name or number is missing"
