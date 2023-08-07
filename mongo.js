@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+require("dotenv").config()
 if (process.argv.length != 3 && process.argv.length != 5) {
     console.log("Usage: node mongo.js  <passworld> [<name> <number>](optional)")
     process.exit(1)
@@ -6,8 +7,7 @@ if (process.argv.length != 3 && process.argv.length != 5) {
 
 mongoose.set("strictQuery", false)
 const pw = process.argv[2]
-const uri = `mongodb+srv://baaden22:${pw}@cluster0.fd64drg.mongodb.net/noteApp?retryWrites=true&w=majority`
-mongoose.connect(uri)
+mongoose.connect(process.env.MONGODB_URI)
 
 const personSchema = new mongoose.Schema({
     name: String,
