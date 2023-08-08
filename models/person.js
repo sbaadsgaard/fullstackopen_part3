@@ -5,9 +5,26 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(res => console.log("Connected to database"))
     .catch(err => console.log("Error connecting to database:", err.message))
 
+const numberValidator = (number) => {
+    const regex = /\d{2,3}-\d+/gm
+    return number.length === 9 && regex.test(number)
+}
+
+
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        minLength: 3,
+        required: true
+    },
+    number: {
+        type: String,
+        required: true,
+        validate: {
+            validator: numberValidator,
+            message: props => `${props.value} is not a valid phone number`
+        }
+    }
 })
 
 personSchema.set("toJSON", {
@@ -18,4 +35,4 @@ personSchema.set("toJSON", {
     }
 })
 
-module.exports= mongoose.model("Person", personSchema)
+module.exports = mongoose.model("Person", personSchema)

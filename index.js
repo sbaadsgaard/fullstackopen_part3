@@ -15,23 +15,6 @@ morgan.token("body", (req, res) => {
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
 
 const Person = require("./models/person")
-let persons = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": 4,
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
 
 
 
@@ -79,27 +62,23 @@ app.delete("/api/persons/:id", (request, response, next) => {
 
 app.put("/api/persons/:id", (request, response, next) => {
     const body = request.body
-    const p = {
+    const person = {
         name: body.name,
         number: body.number
     }
-    Person.findByIdAndUpdate(request.params.id, p, { new: true })
+    Person.findByIdAndUpdate(request.params.id
+        , person
+        , {
+            new: true,
+            runValidators: true,
+            context: "query"
+        })
         .then(updated => response.json(updated))
         .catch(error => next(error))
 })
 
 app.post("/api/persons", (request, response, next) => {
     const body = request.body
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: "name or number is missing"
-        })
-    } else if (persons.some(p => p.name === body.name)) {
-        //Handle later
-        //return response.status(404).json({
-        //    error: "name must be unique"
-        //})
-    }
     const person = new Person({
         name: body.name,
         number: body.number
@@ -114,6 +93,8 @@ const errorHandler = (error, request, response, next) => {
     console.log(error)
     if (error.name === "CastError") {
         return response.status(400).send({ error: "malformed id" })
+    } else if (error.name === "ValidationError") {
+        return response.status(400).send({error: error.message})
     }
     next(error)
 }
