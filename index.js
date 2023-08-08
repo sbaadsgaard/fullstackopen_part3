@@ -8,7 +8,7 @@ const PORT = process.env.PORT
 app.use(express.static("build"))
 app.use(cors())
 app.use(express.json())
-morgan.token("body", (req, res) => {
+morgan.token("body", (req) => {
     return JSON.stringify(req.body)
 })
 
@@ -18,7 +18,7 @@ const Person = require("./models/person")
 
 
 
-app.get("/", (request, response, err) => {
+app.get("/", (request, response) => {
     response.send("<h1>Hello world!</h1>")
 })
 
@@ -43,7 +43,7 @@ app.get("/info", (request, response, next) => {
             response.send(`Phonebook  has info for ${count} people <br/> ${timeAndDate}`)
 
         })
-    .catch(error => next(error))
+        .catch(error => next(error))
 
 
 })
@@ -94,7 +94,7 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === "CastError") {
         return response.status(400).send({ error: "malformed id" })
     } else if (error.name === "ValidationError") {
-        return response.status(400).send({error: error.message})
+        return response.status(400).send({ error: error.message })
     }
     next(error)
 }

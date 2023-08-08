@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 mongoose.set("strictQuery", false)
 mongoose.connect(process.env.MONGODB_URI)
-    .then(res => console.log("Connected to database"))
+    .then(() => console.log("Connected to database"))
     .catch(err => console.log("Error connecting to database:", err.message))
 
 const numberValidator = (number) => {

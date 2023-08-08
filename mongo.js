@@ -1,12 +1,11 @@
 const mongoose = require("mongoose")
 require("dotenv").config()
-if (process.argv.length != 3 && process.argv.length != 5) {
+if (process.argv.length !== 3 && process.argv.length !== 5) {
     console.log("Usage: node mongo.js  <passworld> [<name> <number>](optional)")
     process.exit(1)
 }
 
 mongoose.set("strictQuery", false)
-const pw = process.argv[2]
 mongoose.connect(process.env.MONGODB_URI)
 
 const personSchema = new mongoose.Schema({
@@ -16,7 +15,7 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model("Person", personSchema)
 
-if (process.argv.length == 3) {
+if (process.argv.length === 3) {
     Person.find({})
         .then(people => {
             console.log("Phonebook:")
